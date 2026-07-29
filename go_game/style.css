@@ -100,7 +100,7 @@ html, body {
 }
 .lang-btn.selected { background: var(--seal-red); color: #fff; }
 
-/* =================== BACKGROUND HOAT HINH CO TRANG =================== */
+/* =================== BACKGROUND ANH THUC TE =================== */
 .ancient-bg {
   position: fixed;
   inset: 0;
@@ -109,158 +109,17 @@ html, body {
   pointer-events: none;
 }
 
-.bg-sky {
+.bg-image-real {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, #fce3b8 0%, #f7c988 22%, #f0a984 45%, #e08a8f 65%, #c97fa6 82%, #9a6bab 100%);
-  animation: sky-pulse 12s ease-in-out infinite alternate;
-}
-@keyframes sky-pulse {
-  0% { filter: hue-rotate(0deg) contrast(1); }
-  100% { filter: hue-rotate(15deg) contrast(1.08); }
+  inset: -5%;
+  background: url('bg_ancient.jpg') no-repeat center center / cover;
+  filter: brightness(0.92) contrast(1.05);
+  animation: bg-real-zoom 25s ease-in-out infinite alternate;
 }
 
-.bg-sun {
-  position: absolute;
-  top: 8%;
-  left: 50%;
-  width: 160px;
-  height: 160px;
-  margin-left: -80px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,250,225,0.98) 0%, rgba(255,196,130,0.7) 45%, rgba(255,150,150,0.35) 68%, rgba(255,150,150,0) 80%);
-  box-shadow: 0 0 45px rgba(255,215,130,0.6);
-  animation: sun-glow 4s ease-in-out infinite;
-}
-@keyframes sun-glow {
-  0%, 100% { opacity: 0.85; transform: scale(1); box-shadow: 0 0 35px rgba(255,215,130,0.5); }
-  50% { opacity: 1; transform: scale(1.12); box-shadow: 0 0 65px rgba(255,230,160,0.8); }
-}
-
-.bg-cloud-layer {
-  position: absolute;
-  width: 220%;
-  height: 90px;
-  top: 14%;
-  left: 0;
-  background-repeat: repeat-x;
-  opacity: 0.82;
-}
-.bg-cloud-1 {
-  top: 8%;
-  background-image:
-    radial-gradient(ellipse 110px 32px at 10% 50%, rgba(255,245,230,0.95), transparent 70%),
-    radial-gradient(ellipse 90px 24px at 32% 40%, rgba(255,220,230,0.85), transparent 70%),
-    radial-gradient(ellipse 120px 32px at 60% 55%, rgba(255,240,205,0.9), transparent 70%);
-  background-size: 900px 90px;
-  animation: drift-cloud 35s linear infinite;
-}
-.bg-cloud-2 {
-  top: 20%;
-  background-image:
-    radial-gradient(ellipse 95px 26px at 20% 50%, rgba(235,215,255,0.75), transparent 70%),
-    radial-gradient(ellipse 130px 30px at 55% 45%, rgba(255,230,240,0.7), transparent 70%);
-  background-size: 760px 80px;
-  animation: drift-cloud 45s linear infinite reverse;
-}
-.bg-cloud-3 {
-  top: 4%;
-  background-image:
-    radial-gradient(ellipse 80px 22px at 45% 50%, rgba(255,255,255,0.65), transparent 70%);
-  background-size: 640px 60px;
-  animation: drift-cloud 25s linear infinite;
-}
-@keyframes drift-cloud {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-.bg-mountain {
-  position: absolute;
-  bottom: 0;
-  width: 220%;
-  height: 42%;
-}
-.bg-mountain-far {
-  clip-path: polygon(0% 100%, 0% 62%, 8% 48%, 16% 64%, 24% 42%, 32% 60%, 42% 34%, 52% 58%,
-    60% 44%, 70% 62%, 78% 40%, 88% 60%, 96% 46%, 100% 62%, 100% 100%);
-  background: linear-gradient(180deg, rgba(154, 107, 171, 0.65), rgba(107, 78, 130, 0.6));
-  animation: drift-mtn 70s linear infinite;
-}
-.bg-mountain-mid {
-  height: 34%;
-  clip-path: polygon(0% 100%, 0% 66%, 9% 50%, 18% 66%, 27% 44%, 38% 64%, 48% 38%,
-    58% 62%, 68% 42%, 78% 64%, 88% 46%, 100% 64%, 100% 100%);
-  background: linear-gradient(180deg, rgba(94, 138, 122, 0.7), rgba(58, 96, 84, 0.68));
-  animation: drift-mtn 50s linear infinite reverse;
-}
-.bg-mountain-near {
-  height: 26%;
-  clip-path: polygon(0% 100%, 0% 72%, 10% 52%, 20% 70%, 30% 46%, 40% 68%, 50% 42%,
-    62% 66%, 72% 44%, 82% 68%, 92% 50%, 100% 70%, 100% 100%);
-  background: linear-gradient(180deg, rgba(58, 74, 44, 0.85), rgba(33, 48, 26, 0.9));
-  animation: drift-mtn 35s linear infinite;
-}
-@keyframes drift-mtn {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-.bg-bamboo {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 55%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 4%;
-  opacity: 0.45;
-}
-.bamboo-stalk {
-  position: relative;
-  width: 11px;
-  height: 100%;
-  background: linear-gradient(180deg, #4a5c3a, #21301a);
-  border-radius: 6px;
-  transform-origin: bottom center;
-  animation: bamboo-sway 3.5s ease-in-out infinite;
-}
-.bamboo-stalk.s1 { height: 70%; animation-duration: 3.2s; }
-.bamboo-stalk.s2 { height: 95%; animation-duration: 3.8s; animation-delay: .3s; }
-.bamboo-stalk.s3 { height: 60%; animation-duration: 3.4s; animation-delay: .6s; }
-.bamboo-stalk.s4 { height: 85%; animation-duration: 3.6s; animation-delay: .15s; }
-.bamboo-stalk span {
-  position: absolute;
-  width: 38px;
-  height: 12px;
-  background: #354a26;
-  border-radius: 0 60% 0 60%;
-  left: 6px;
-}
-.bamboo-stalk span:nth-child(1) { top: 15%; }
-.bamboo-stalk span:nth-child(2) { top: 35%; transform: scaleX(-1); left: -30px; }
-.bamboo-stalk span:nth-child(3) { top: 55%; }
-@keyframes bamboo-sway {
-  0%, 100% { transform: rotate(-4deg); }
-  50% { transform: rotate(4deg); }
-}
-
-.bg-lantern {
-  position: absolute;
-  top: 18%;
-  right: 12%;
-  width: 38px;
-  height: 52px;
-  border-radius: 50% 50% 45% 45%;
-  background: radial-gradient(circle at 50% 40%, #ffdf88, var(--seal-red) 85%);
-  box-shadow: 0 0 30px 10px rgba(255, 180, 70, 0.7);
-  animation: lantern-swing 3.2s ease-in-out infinite;
-  transform-origin: top center;
-}
-@keyframes lantern-swing {
-  0%, 100% { transform: rotate(-6deg); }
-  50% { transform: rotate(6deg); }
+@keyframes bg-real-zoom {
+  0% { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.08) translate(-1%, -1%); }
 }
 
 /* ================= PETAL FALL ANIMATION ================= */
