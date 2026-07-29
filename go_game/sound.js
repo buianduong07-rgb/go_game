@@ -103,12 +103,17 @@
     }
   }
 
-  // Tự động phát nhạc nền khi tương tác với trang
-  document.addEventListener('click', () => {
+  // Tự động phát nhạc nền ngay khi người dùng chạm hoặc click bất kỳ vị trí nào
+  function triggerBGM() {
+    ensureCtx();
     if (window.settings && window.settings.sound && !bgmTimer) {
       startBGM();
     }
-  }, { once: true });
+  }
+
+  window.addEventListener('pointerdown', triggerBGM, { once: true });
+  window.addEventListener('click', triggerBGM, { once: true });
+  window.addEventListener('keydown', triggerBGM, { once: true });
 
   window.SFX = {
     stone() { tone(320, 0.12, "square", 0.18); },
