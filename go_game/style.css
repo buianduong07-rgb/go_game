@@ -40,7 +40,10 @@
 [data-theme="dark"] .btn-secondary { background: #2a2318; color: var(--ink); border-color: rgba(243,236,221,0.16); }
 [data-theme="dark"] .bg-wash { background: rgba(8, 6, 4, 0.45); }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 
 html, body {
   margin: 0;
@@ -248,53 +251,7 @@ html, body {
   100% { transform: scale(1.04) translateY(-6px); }
 }
 
-/* --- Biển sương mây chuyển động dưới chân núi (ẢNH THẬT) --- */
-.bg-fog {
-  position: absolute;
-  left: 0;
-  width: 300%;
-  pointer-events: none;
-  mix-blend-mode: screen;
-  transition: opacity 1.2s ease;
-}
-.fog-1 {
-  bottom: 12%;
-  height: 160px;
-  background: url('real_mist_photo.jpg') repeat-x center / auto 100%;
-  opacity: 0.65;
-  animation: drift-fog-1 50s linear infinite;
-}
-.fog-2 {
-  bottom: 20%;
-  height: 140px;
-  background: url('real_mist_photo.jpg') repeat-x center / auto 100%;
-  opacity: 0.45;
-  filter: blur(2px);
-  animation: drift-fog-2 75s linear infinite;
-}
-.fog-3 {
-  bottom: 5%;
-  height: 180px;
-  background: url('real_mist_photo.jpg') repeat-x center / auto 100%;
-  opacity: 0.35;
-  filter: blur(4px);
-  animation: drift-fog-3 100s linear infinite;
-}
-[data-theme="dark"] .bg-fog {
-  opacity: 0.2;
-}
-@keyframes drift-fog-1 {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-33.33%); }
-}
-@keyframes drift-fog-2 {
-  from { transform: translateX(-33.33%); }
-  to   { transform: translateX(0); }
-}
-@keyframes drift-fog-3 {
-  from { transform: translateX(-15%); }
-  to   { transform: translateX(-48.33%); }
-}
+/* --- Biển sương mây (đã xoá theo yêu cầu) --- */
 
 /* ================= PETAL FALL ANIMATION ================= */
 .bg-petals {
