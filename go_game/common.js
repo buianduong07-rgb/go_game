@@ -21,6 +21,24 @@ document.querySelectorAll("[data-back]").forEach(btn => {
   btn.addEventListener("click", () => showScreen(btn.dataset.back));
 });
 
+// Tao hieu ung hoa dao rơi dong
+(function initPetals() {
+  const container = document.getElementById('bg-petals');
+  if (!container) return;
+  const count = 15;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    const size = Math.random() * 8 + 8;
+    p.style.width = size + 'px';
+    p.style.height = size * 1.3 + 'px';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (Math.random() * 5 + 5) + 's';
+    p.style.animationDelay = (Math.random() * 5) + 's';
+    container.appendChild(p);
+  }
+})();
+
 /**
  * Tao 1 dong ho dem gio moi luot. durationSeconds = 0 nghia la khong gioi han.
  * Tra ve {start, stop} de tung game tu goi khi bat dau/ket thuc luot.
