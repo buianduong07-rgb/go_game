@@ -72,7 +72,14 @@
       window.settings.sound = !window.settings.sound;
       applySoundBtn();
       persist();
-      if (window.SFX) window.SFX.click();
+      if (window.SFX) {
+        if (window.settings.sound) {
+          window.SFX.startBGM();
+        } else {
+          window.SFX.stopBGM();
+        }
+        window.SFX.click();
+      }
     });
 
     document.querySelectorAll(".lang-btn").forEach(b => {

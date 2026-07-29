@@ -45,31 +45,98 @@
     src.start();
   }
 
-  // ================= NHẠC NỀN CUNG ĐÌNH (PENTATONIC GUZHENG BGM) =================
-  let bgmOsc = null;
-  let bgmGain = null;
+  // ================= NHẠC NỀN CUNG ĐÌNH (COURT MUSIC BGM) =================
   let bgmTimer = null;
+  let bgmStep = 0;
 
-  // Thanh âm ngũ cung (Guzheng: D, F, G, A, C)
-  const pentatonicScale = [293.66, 349.23, 392.00, 440.00, 523.25, 587.33, 698.46, 783.99, 880.00];
+  // Giai điệu cung đình cố định - thang âm ngũ cung Trung Hoa (C D E G A)
+  // Mỗi nốt: [tần số, thời lượng giây]
+  const courtMelody = [
+    // Câu 1: Mở đầu trang nghiêm
+    [523.25, 1.8], [587.33, 1.2], [659.25, 1.8], [783.99, 2.4],
+    [880.00, 1.2], [783.99, 1.8], [659.25, 2.4], [0, 1.0],
+    // Câu 2: Luyến láy
+    [587.33, 1.2], [523.25, 1.8], [440.00, 1.2], [523.25, 2.4],
+    [587.33, 1.8], [659.25, 1.2], [523.25, 2.4], [0, 1.0],
+    // Câu 3: Cao trào nhẹ
+    [783.99, 1.2], [880.00, 1.8], [783.99, 1.2], [659.25, 1.8],
+    [587.33, 2.4], [523.25, 1.2], [440.00, 1.8], [0, 1.0],
+    // Câu 4: Kết thúc trầm lắng
+    [523.25, 1.8], [440.00, 1.2], [392.00, 2.4], [440.00, 1.8],
+    [523.25, 2.4], [0, 2.0],
+  ];
 
-  function playGuzhengNote(c, freq, time) {
-    if (!window.settings || !window.settings.sound) return;
-    const osc = c.createOscillator();
-    const gain = c.createGain();
-    
-    // Tiếng đàn Tranh / Đàn Tranh Cung Đình (Triangle wave)
-    osc.type = "triangle";
-    osc.frequency.setValueAtTime(freq, time);
+  // Phát một nốt đàn Tranh (Guzheng) với âm sắc phong phú
+  function playCourtNote(c, freq, duration, startTime) {
+    if (freq === 0) return; // nốt nghỉ
 
-    // Dynamic pluck decay
-    gain.gain.setValueAtTime(0, time);
-    gain.gain.linearRampToValueAtTime(0.08, time + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.0001, time + 2.2);
+    // Lớp 1: Âm cơ bản (sine) - trong trẻo
+    const osc1 = c.createOscillator();
+    const gain1 = c.createGain();
+    osc1.type = "sine";
+    osc1.frequency.setValueAtTime(freq, startTime);
+    gain1.gain.setValueAtTime(0, startTime);
+    gain1.gain.linearRampToValueAtTime(0.06, startTime + 0.03);
+    gain1.gain.setValueAtTime(0.06, startTime + 0.05);
+    gain1.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+    osc1.connect(gain1).connect(c.destination);
+    osc1.start(startTime);
+    osc1.stop(startTime + duration + 0.1);
 
-    osc.connect(gain).connect(c.destination);
-    osc.start(time);
-    osc.stop(time + 2.3);
+    // Lớp 2: Họa âm bậc 2 (triangle) - tạo độ ấm
+    const osc2 = c.createOscillator();
+    const gain2 = c.createGain();
+    osc2.type = "triangle";
+    osc2.frequency.setValueAtTime(freq * 2, startTime);
+    gain2.gain.setValueAtTime(0, startTime);
+    gain2.gain.linearRampToValueAtTime(0.02, startTime + 0.02);
+    gain2.gain.exponentialRampToValueAtTime(0.0001, startTime + duration * 0.7);
+    osc2.connect(gain2).connect(c.destination);
+    osc2.start(startTime);
+    osc2.stop(startTime + duration + 0.1);
+
+    // Lớp 3: Tiếng rung nhẹ (vibrato) - đặc trưng nhạc cung đình
+    const osc3 = c.createOscillator();
+    const gain3 = c.createGain();
+    const vibrato = c.createOscillator();
+    const vibratoGain = c.createGain();
+    vibrato.frequency.value = 5;
+    vibratoGain.gain.value = 3;
+    vibrato.connect(vibratoGain).connect(osc3.frequency);
+    osc3.type = "sine";
+    osc3.frequency.setValueAtTime(freq, startTime);
+    gain3.gain.setValueAtTime(0, startTime);
+    gain3.gain.linearRampToValueAtTime(0.03, startTime + duration * 0.3);
+    gain3.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+    osc3.connect(gain3).connect(c.destination);
+    vibrato.start(startTime);
+    osc3.start(startTime);
+    vibrato.stop(startTime + duration + 0.1);
+    osc3.stop(startTime + duration + 0.1);
+  }
+
+  // Phát nền trầm drone nhẹ (đặc trưng nhạc cung đình)
+  let droneOsc = null;
+  let droneGain = null;
+
+  function startDrone(c) {
+    if (droneOsc) return;
+    droneOsc = c.createOscillator();
+    droneGain = c.createGain();
+    droneOsc.type = "sine";
+    droneOsc.frequency.value = 130.81; // C3 - nốt nền trầm
+    droneGain.gain.setValueAtTime(0, c.currentTime);
+    droneGain.gain.linearRampToValueAtTime(0.025, c.currentTime + 2);
+    droneOsc.connect(droneGain).connect(c.destination);
+    droneOsc.start();
+  }
+
+  function stopDrone() {
+    if (droneOsc) {
+      try { droneOsc.stop(); } catch(e) {}
+      droneOsc = null;
+      droneGain = null;
+    }
   }
 
   function startBGM() {
@@ -77,33 +144,38 @@
     const c = ensureCtx();
     if (!c) return;
 
-    let step = 0;
-    bgmTimer = setInterval(() => {
-      if (!window.settings || !window.settings.sound) return;
+    startDrone(c);
+    bgmStep = 0;
+
+    function playNextNote() {
+      if (!window.settings || !window.settings.sound) {
+        stopBGM();
+        return;
+      }
       const c = ensureCtx();
       if (!c) return;
-      
-      const now = c.currentTime;
-      // Chọn ngẫu nhiên nốt trong thang âm ngũ cung tạo giai điệu du dương
-      const freq1 = pentatonicScale[Math.floor(Math.random() * pentatonicScale.length)];
-      playGuzhengNote(c, freq1, now);
 
-      if (step % 3 === 0) {
-        const freq2 = pentatonicScale[Math.floor(Math.random() * 4)];
-        playGuzhengNote(c, freq2, now + 0.3);
-      }
-      step++;
-    }, 1200);
+      const [freq, dur] = courtMelody[bgmStep % courtMelody.length];
+      const now = c.currentTime;
+
+      playCourtNote(c, freq, dur, now);
+
+      bgmStep++;
+      bgmTimer = setTimeout(playNextNote, dur * 1000);
+    }
+
+    playNextNote();
   }
 
   function stopBGM() {
     if (bgmTimer) {
-      clearInterval(bgmTimer);
+      clearTimeout(bgmTimer);
       bgmTimer = null;
     }
+    stopDrone();
   }
 
-  // Tự động phát nhạc nền ngay khi người dùng chạm hoặc click bất kỳ vị trí nào
+  // Tự động phát nhạc nền ngay khi người dùng tương tác
   function triggerBGM() {
     ensureCtx();
     if (window.settings && window.settings.sound && !bgmTimer) {
