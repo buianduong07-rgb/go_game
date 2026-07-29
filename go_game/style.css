@@ -143,14 +143,14 @@ html, body {
   100% { filter: brightness(1.2); }
 }
 
-/* --- Mặt trời thật (ẩn khi tối) --- */
+/* --- Mặt trời thật (bên phải, ẩn khi tối) --- */
 .bg-sun-real {
   position: absolute;
   top: 5%;
-  left: 50%;
+  right: 12%;
+  left: auto;
   width: 180px;
   height: 180px;
-  margin-left: -90px;
   background: url('real_sun.jpg') no-repeat center center / contain;
   border-radius: 50%;
   mix-blend-mode: screen;
@@ -168,14 +168,13 @@ html, body {
   50% { transform: scale(1.06); }
 }
 
-/* --- Mặt trăng thật (ẩn ban ngày, hiện khi tối) --- */
+/* --- Mặt trăng thật (bên trái, ẩn ban ngày, hiện khi tối) --- */
 .bg-moon-real {
   position: absolute;
   top: 6%;
-  left: 50%;
+  left: 12%;
   width: 150px;
   height: 150px;
-  margin-left: -75px;
   background: url('real_moon.jpg') no-repeat center center / contain;
   border-radius: 50%;
   mix-blend-mode: screen;
@@ -194,25 +193,34 @@ html, body {
   50% { filter: drop-shadow(0 0 35px rgba(200, 220, 255, 0.9)); }
 }
 
-/* --- Mây thật --- */
+/* --- Mây chân thực (pure CSS, không dùng ảnh) --- */
 .bg-clouds-real {
   position: absolute;
   top: 0;
   left: 0;
-  width: 200%;
-  height: 45%;
-  background: url('real_clouds.jpg') repeat-x center / auto 100%;
-  mix-blend-mode: screen;
-  opacity: 0.5;
-  animation: drift-clouds-real 50s linear infinite;
+  width: 300%;
+  height: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 180px 55px at 8% 35%, rgba(255,255,255,0.55), transparent 70%),
+    radial-gradient(ellipse 140px 45px at 15% 40%, rgba(255,248,240,0.4), transparent 70%),
+    radial-gradient(ellipse 220px 60px at 28% 28%, rgba(255,255,255,0.5), transparent 70%),
+    radial-gradient(ellipse 160px 50px at 38% 38%, rgba(255,245,235,0.35), transparent 70%),
+    radial-gradient(ellipse 250px 70px at 52% 22%, rgba(255,255,255,0.45), transparent 70%),
+    radial-gradient(ellipse 130px 40px at 60% 35%, rgba(255,250,245,0.4), transparent 70%),
+    radial-gradient(ellipse 200px 55px at 72% 30%, rgba(255,255,255,0.5), transparent 70%),
+    radial-gradient(ellipse 170px 50px at 85% 25%, rgba(255,248,240,0.45), transparent 70%),
+    radial-gradient(ellipse 190px 45px at 95% 32%, rgba(255,255,255,0.35), transparent 70%);
+  opacity: 0.8;
+  animation: drift-clouds-real 60s linear infinite;
   transition: opacity 1.2s ease;
 }
 [data-theme="dark"] .bg-clouds-real {
-  opacity: 0.25;
+  opacity: 0.15;
 }
 @keyframes drift-clouds-real {
   from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  to   { transform: translateX(-33.33%); }
 }
 
 /* --- Núi thật --- */
