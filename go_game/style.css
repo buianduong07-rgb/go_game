@@ -193,7 +193,7 @@ html, body {
   50% { filter: drop-shadow(0 0 35px rgba(200, 220, 255, 0.9)); }
 }
 
-/* --- Mây chân thực (pure CSS, không dùng ảnh) --- */
+/* --- Mây chân thực (nhiều lớp, dày dặn) --- */
 .bg-clouds-real {
   position: absolute;
   top: 0;
@@ -202,25 +202,53 @@ html, body {
   height: 50%;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 180px 55px at 8% 35%, rgba(255,255,255,0.55), transparent 70%),
-    radial-gradient(ellipse 140px 45px at 15% 40%, rgba(255,248,240,0.4), transparent 70%),
-    radial-gradient(ellipse 220px 60px at 28% 28%, rgba(255,255,255,0.5), transparent 70%),
-    radial-gradient(ellipse 160px 50px at 38% 38%, rgba(255,245,235,0.35), transparent 70%),
-    radial-gradient(ellipse 250px 70px at 52% 22%, rgba(255,255,255,0.45), transparent 70%),
-    radial-gradient(ellipse 130px 40px at 60% 35%, rgba(255,250,245,0.4), transparent 70%),
-    radial-gradient(ellipse 200px 55px at 72% 30%, rgba(255,255,255,0.5), transparent 70%),
-    radial-gradient(ellipse 170px 50px at 85% 25%, rgba(255,248,240,0.45), transparent 70%),
-    radial-gradient(ellipse 190px 45px at 95% 32%, rgba(255,255,255,0.35), transparent 70%);
-  opacity: 0.8;
-  animation: drift-clouds-real 60s linear infinite;
+    /* Đám mây lớn - trung tâm */
+    radial-gradient(ellipse 260px 80px at 10% 30%, rgba(255,255,255,0.6), transparent 65%),
+    radial-gradient(ellipse 180px 60px at 13% 34%, rgba(255,250,245,0.5), transparent 60%),
+    radial-gradient(ellipse 140px 45px at 7% 28%, rgba(255,255,255,0.4), transparent 65%),
+    /* Đám mây thứ 2 */
+    radial-gradient(ellipse 300px 90px at 30% 24%, rgba(255,255,255,0.55), transparent 65%),
+    radial-gradient(ellipse 200px 65px at 33% 28%, rgba(255,248,240,0.45), transparent 60%),
+    radial-gradient(ellipse 160px 50px at 27% 22%, rgba(255,255,255,0.35), transparent 65%),
+    /* Đám mây thứ 3 - mỏng */
+    radial-gradient(ellipse 220px 55px at 52% 32%, rgba(255,255,255,0.4), transparent 65%),
+    radial-gradient(ellipse 170px 45px at 55% 35%, rgba(255,250,245,0.3), transparent 60%),
+    /* Đám mây thứ 4 */
+    radial-gradient(ellipse 280px 85px at 72% 26%, rgba(255,255,255,0.5), transparent 65%),
+    radial-gradient(ellipse 200px 60px at 75% 30%, rgba(255,248,240,0.4), transparent 60%),
+    radial-gradient(ellipse 150px 45px at 69% 24%, rgba(255,255,255,0.35), transparent 65%),
+    /* Đám mây thứ 5 - nhỏ */
+    radial-gradient(ellipse 190px 55px at 92% 28%, rgba(255,255,255,0.45), transparent 65%),
+    radial-gradient(ellipse 130px 40px at 95% 32%, rgba(255,250,245,0.35), transparent 60%);
+  opacity: 0.85;
+  animation: drift-clouds-real 80s linear infinite;
   transition: opacity 1.2s ease;
 }
+/* Lớp mây thứ 2 — thấp hơn, chậm hơn, ngược hướng */
+.bg-clouds-layer2 {
+  top: 5%;
+  height: 45%;
+  opacity: 0.5;
+  animation: drift-clouds-layer2 110s linear infinite;
+  background:
+    radial-gradient(ellipse 200px 65px at 5% 50%, rgba(255,255,255,0.4), transparent 65%),
+    radial-gradient(ellipse 150px 50px at 8% 54%, rgba(255,248,240,0.3), transparent 60%),
+    radial-gradient(ellipse 240px 70px at 25% 45%, rgba(255,255,255,0.35), transparent 65%),
+    radial-gradient(ellipse 180px 55px at 45% 52%, rgba(255,250,245,0.3), transparent 60%),
+    radial-gradient(ellipse 260px 75px at 65% 42%, rgba(255,255,255,0.4), transparent 65%),
+    radial-gradient(ellipse 190px 55px at 68% 48%, rgba(255,248,240,0.3), transparent 60%),
+    radial-gradient(ellipse 210px 60px at 88% 46%, rgba(255,255,255,0.35), transparent 65%);
+}
 [data-theme="dark"] .bg-clouds-real {
-  opacity: 0.15;
+  opacity: 0.12;
 }
 @keyframes drift-clouds-real {
   from { transform: translateX(0); }
   to   { transform: translateX(-33.33%); }
+}
+@keyframes drift-clouds-layer2 {
+  from { transform: translateX(-33.33%); }
+  to   { transform: translateX(0); }
 }
 
 /* --- Núi thật --- */
@@ -243,6 +271,63 @@ html, body {
 @keyframes mountain-real-drift {
   0% { transform: scale(1) translateY(0); }
   100% { transform: scale(1.04) translateY(-6px); }
+}
+
+/* --- Sương mù chân núi (3 lớp, trôi chậm) --- */
+.bg-fog {
+  position: absolute;
+  left: 0;
+  width: 300%;
+  pointer-events: none;
+  transition: opacity 1.2s ease;
+}
+.fog-1 {
+  bottom: 18%;
+  height: 120px;
+  background:
+    radial-gradient(ellipse 400px 80px at 10% 50%, rgba(255,255,255,0.45), transparent 70%),
+    radial-gradient(ellipse 350px 70px at 30% 55%, rgba(255,250,245,0.35), transparent 70%),
+    radial-gradient(ellipse 500px 90px at 55% 45%, rgba(255,255,255,0.4), transparent 70%),
+    radial-gradient(ellipse 380px 75px at 78% 50%, rgba(255,248,240,0.35), transparent 70%),
+    radial-gradient(ellipse 420px 80px at 95% 48%, rgba(255,255,255,0.3), transparent 70%);
+  opacity: 0.7;
+  animation: drift-fog-1 45s linear infinite;
+}
+.fog-2 {
+  bottom: 12%;
+  height: 100px;
+  background:
+    radial-gradient(ellipse 350px 65px at 8% 50%, rgba(255,255,255,0.35), transparent 70%),
+    radial-gradient(ellipse 450px 80px at 35% 50%, rgba(255,250,245,0.3), transparent 70%),
+    radial-gradient(ellipse 380px 70px at 62% 55%, rgba(255,255,255,0.35), transparent 70%),
+    radial-gradient(ellipse 300px 60px at 88% 50%, rgba(255,248,240,0.3), transparent 70%);
+  opacity: 0.5;
+  animation: drift-fog-2 65s linear infinite;
+}
+.fog-3 {
+  bottom: 22%;
+  height: 80px;
+  background:
+    radial-gradient(ellipse 300px 50px at 15% 50%, rgba(255,255,255,0.25), transparent 70%),
+    radial-gradient(ellipse 400px 60px at 45% 50%, rgba(255,250,245,0.2), transparent 70%),
+    radial-gradient(ellipse 350px 55px at 75% 50%, rgba(255,255,255,0.25), transparent 70%);
+  opacity: 0.4;
+  animation: drift-fog-3 90s linear infinite;
+}
+[data-theme="dark"] .bg-fog {
+  opacity: 0.15;
+}
+@keyframes drift-fog-1 {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-33.33%); }
+}
+@keyframes drift-fog-2 {
+  from { transform: translateX(-33.33%); }
+  to   { transform: translateX(0); }
+}
+@keyframes drift-fog-3 {
+  from { transform: translateX(-10%); }
+  to   { transform: translateX(-43.33%); }
 }
 
 /* ================= PETAL FALL ANIMATION ================= */
