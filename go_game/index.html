@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Trò Chơi Cổ Phong — Cờ Vây, Đầu Hồ & Lục Bác</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============ THANH CAI DAT (SANG/TOI, NGON NGU, AM THANH) ============ -->
+  <div class="settings-bar">
+    <button id="btn-theme-toggle" class="settings-btn" title="Sáng / Tối">🌙</button>
+    <button id="btn-sound-toggle" class="settings-btn" title="Âm thanh">🔊</button>
+    <div class="lang-switch">
+      <button class="lang-btn selected" data-lang="vi">VI</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </div>
+
+  <!-- ============ BACKGROUND HOAT HINH PHONG CACH CO TRANG ============ -->
+  <div class="ancient-bg" aria-hidden="true">
+    <div class="bg-sky"></div>
+    <div class="bg-sun"></div>
+    <div class="bg-cloud-layer bg-cloud-1"></div>
+    <div class="bg-cloud-layer bg-cloud-2"></div>
+    <div class="bg-cloud-layer bg-cloud-3"></div>
+    <div class="bg-mountain bg-mountain-far"></div>
+    <div class="bg-mountain bg-mountain-mid"></div>
+    <div class="bg-mountain bg-mountain-near"></div>
+    <div class="bg-bamboo">
+      <div class="bamboo-stalk s1"><span></span><span></span><span></span></div>
+      <div class="bamboo-stalk s2"><span></span><span></span><span></span></div>
+      <div class="bamboo-stalk s3"><span></span><span></span><span></span></div>
+      <div class="bamboo-stalk s4"><span></span><span></span><span></span></div>
+    </div>
+    <div class="bg-lantern"></div>
+    <div class="bg-wash"></div>
+  </div>
+
+  <!-- ================= MÀN HÌNH CHỌN GAME ================= -->
+  <section id="screen-home" class="screen active">
+    <div class="menu-wrap">
+      <h1 class="brand"><span class="brand-glyph">古</span><span class="brand-sub" data-i18n="home.title">TRÒ CHƠI CỔ PHONG</span></h1>
+      <p class="tagline" data-i18n="home.tagline">Ba thú vui tao nhã của người xưa</p>
+
+      <div class="game-card-grid three">
+        <button class="game-card" data-goto="menu-go">
+          <span class="game-card-glyph">囲</span>
+          <span class="game-card-title" data-i18n="card.go.title">Cờ Vây</span>
+          <span class="game-card-desc" data-i18n="card.go.desc">Vây bắt lãnh thổ</span>
+        </button>
+        <button class="game-card" data-goto="menu-th">
+          <span class="game-card-glyph">壺</span>
+          <span class="game-card-title" data-i18n="card.th.title">Đầu Hồ</span>
+          <span class="game-card-desc" data-i18n="card.th.desc">Ném tên trúng bình</span>
+        </button>
+        <button class="game-card" data-goto="menu-lb">
+          <span class="game-card-glyph">博</span>
+          <span class="game-card-title" data-i18n="card.lb.title">Lục Bác</span>
+          <span class="game-card-desc" data-i18n="card.lb.desc">Gieo xúc xắc đua quân</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- =====================  GAME 1: CỜ VÂY  ======================= -->
+  <!-- ============================================================= -->
+
+  <section id="screen-menu-go" class="screen">
+    <div class="menu-wrap">
+      <button class="btn-link" data-back="home" data-i18n="nav.back.chooseGame">← Chọn trò chơi khác</button>
+      <h1 class="brand small"><span class="brand-glyph">囲</span><span class="brand-sub" data-i18n="go.title">CỜ VÂY</span></h1>
+      <p class="tagline" data-i18n="go.tagline">Cờ vây</p>
+
+      <div class="menu-card">
+        <h2 data-i18n="go.boardsize.heading">Kích thước bàn cờ</h2>
+        <div class="option-row" id="go-board-size-options">
+          <button class="opt" data-size="9"><span data-i18n="go.boardsize.9">9 × 9</span><span data-i18n="go.boardsize.9.desc">Cho người mới</span></button>
+          <button class="opt selected" data-size="13"><span data-i18n="go.boardsize.13">13 × 13</span><span data-i18n="go.boardsize.13.desc">Cân bằng</span></button>
+          <button class="opt" data-size="19"><span data-i18n="go.boardsize.19">19 × 19</span><span data-i18n="go.boardsize.19.desc">Chuẩn thi đấu</span></button>
+        </div>
+      </div>
+
+      <div class="menu-card">
+        <h2 data-i18n="mode.heading">Chế độ chơi</h2>
+        <div class="option-row two-col" id="go-mode-options">
+          <button class="opt selected" data-mode="pvp"><span data-i18n="mode.pvp">2 Người</span><span data-i18n="mode.pvp.desc">Chơi cùng bạn bè</span></button>
+          <button class="opt" data-mode="ai"><span data-i18n="mode.ai">1 Người</span><span data-i18n="mode.ai.desc">Đấu với máy</span></button>
+        </div>
+        <div id="go-ai-difficulty" class="option-row hidden">
+          <button class="opt selected" data-diff="easy" data-i18n="diff.easy">Dễ</button>
+          <button class="opt" data-diff="medium" data-i18n="diff.medium">Vừa</button>
+          <button class="opt" data-diff="hard" data-i18n="diff.hard">Khó</button>
+        </div>
+      </div>
+
+      <div class="menu-card">
+        <h2 data-i18n="timer.heading">Thời gian mỗi lượt</h2>
+        <div class="option-row" id="go-timer-options">
+          <button class="opt" data-timer="15" data-i18n="timer.15">15 giây</button>
+          <button class="opt selected" data-timer="30" data-i18n="timer.30">30 giây</button>
+          <button class="opt" data-timer="0" data-i18n="timer.none">Không giới hạn</button>
+        </div>
+      </div>
+
+      <div class="menu-actions">
+        <button id="go-btn-start" class="btn-primary" data-i18n="btn.start">Bắt Đầu Chơi</button>
+        <button id="go-btn-tutorial" class="btn-secondary" data-i18n="btn.tutorial">Hướng Dẫn Chơi</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-tutorial-go" class="screen">
+    <div class="tutorial-wrap">
+      <button class="btn-link" data-back="menu-go" data-i18n="nav.back">← Quay lại</button>
+      <h1 class="section-title" data-i18n="go.tut.title">Cách Chơi Cờ Vây</h1>
+
+      <div class="tut-card">
+        <h3 data-i18n="go.tut.1.title">1. Mục tiêu</h3>
+        <p data-i18n="go.tut.1.body" data-i18n-html></p>
+      </div>
+      <div class="tut-card">
+        <h3 data-i18n="go.tut.2.title">2. Khí</h3>
+        <p data-i18n="go.tut.2.body" data-i18n-html></p>
+      </div>
+      <div class="tut-card">
+        <h3 data-i18n="go.tut.3.title">3. Luật Ko</h3>
+        <p data-i18n="go.tut.3.body" data-i18n-html></p>
+      </div>
+      <div class="tut-card">
+        <h3 data-i18n="go.tut.4.title">4. Nước tự sát</h3>
+        <p data-i18n="go.tut.4.body" data-i18n-html></p>
+      </div>
+      <div class="tut-card">
+        <h3 data-i18n="go.tut.5.title">5. Kết thúc & tính điểm</h3>
+        <p data-i18n="go.tut.5.body" data-i18n-html></p>
+      </div>
+
+      <button class="btn-primary" data-back="menu-go" data-i18n="btn.tut.done">Đã hiểu, bắt đầu chơi!</button>
+    </div>
+  </section>
+
+  <section id="screen-game-go" class="screen">
+    <div class="game-wrap">
+      <header class="game-header">
+        <button class="btn-link" data-back="menu-go" data-i18n="nav.back">← Menu</button>
+        <div class="turn-indicator" id="go-turn-indicator">
+          <span class="stone-dot black"></span>
+          <span id="go-turn-text">Lượt: Đen</span>
+        </div>
+        <button id="go-btn-help" class="btn-icon" title="Hướng dẫn">?</button>
+      </header>
+
+      <div class="timer-bar-track"><div class="timer-bar-fill" id="go-timer-bar"></div></div>
+
+      <div class="board-area">
+        <canvas id="board-canvas"></canvas>
+      </div>
+
+      <div class="score-bar">
+        <div class="score-chip black">
+          <span class="stone-dot black"></span> <span data-i18n="go.captures.black">Đen — bắt:</span> <b id="go-black-captures">0</b>
+        </div>
+        <div class="score-chip white">
+          <span class="stone-dot white"></span> <span data-i18n="go.captures.white">Trắng — bắt:</span> <b id="go-white-captures">0</b>
+        </div>
+      </div>
+
+      <div class="game-actions three-col">
+        <button id="go-btn-pass" class="btn-secondary" data-i18n="go.btn.pass">Bỏ Lượt</button>
+        <button id="go-btn-undo" class="btn-secondary" data-i18n="go.btn.undo">Đi Lại</button>
+        <button id="go-btn-resign" class="btn-secondary danger" data-i18n="go.btn.resign">Đầu Hàng</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- =====================  GAME 2: ĐẦU HỒ  ======================= -->
+  <!-- ============================================================= -->
+
+  <section id="screen-menu-th" class="screen">
+    <div class="menu-wrap">
+      <button class="btn-link" data-back="home" data-i18n="nav.back.chooseGame">← Chọn trò chơi khác</button>
+      <h1 class="brand small"><span class="brand-glyph">壺</span><span class="brand-sub" data-i18n="th.title">ĐẦU HỒ</span></h1>
+      <p class="tagline" data-i18n="th.tagline">Đầu Hồ</p>
+
+      <div class="menu-card">
+        <h2 data-i18n="th.arrows.heading">Số mũi tên mỗi lượt</h2>
+        <div class="option-row" id="th-arrow-options">
+          <button class="opt" data-arrows="5"><span data-i18n="th.arrows.5">5 mũi</span><span data-i18n="th.arrows.5.desc">Ván nhanh</span></button>
+          <button class="opt selected" data-arrows="8"><span data-i18n="th.arrows.8">8 mũi</span><span data-i18n="th.arrows.8.desc">Tiêu chuẩn</span></button>
+          <button class="opt" data-arrows="12"><span data-i18n="th.arrows.12">12 mũi</span><span data-i18n="th.arrows.12.desc">Bền sức</span></button>
+        </div>
+      </div>
+
+      <div class="menu-card">
+        <h2 data-i18n="mode.heading">Chế độ chơi</h2>
+        <div class="option-row two-col" id="th-mode-options">
+          <button class="opt selected" data-mode="pvp"><span data-i18n="mode.pvp">2 Người</span><span data-i18n="mode.pvp.desc">Chơi cùng bạn bè</span></button>
+          <button class="opt" data-mode="ai"><span data-i18n="mode.ai">1 Người</span><span data-i18n="mode.ai.desc">Đấu với máy</span></button>
+        </div>
+        <div id="th-ai-difficulty" class="option-row hidden">
+          <button class="opt selected" data-diff="easy" data-i18n="diff.easy">Dễ</button>
+          <button class="opt" data-diff="medium" data-i18n="diff.medium">Vừa</button>
+          <button class="opt" data-diff="hard" data-i18n="diff.hard">Khó</button>
+        </div>
+      </div>
+
+      <div class="menu-card">
+        <h2 data-i18n="timer.heading">Thời gian mỗi lượt</h2>
+        <div class="option-row" id="th-timer-options">
+          <button class="opt" data-timer="15" data-i18n="timer.15">15 giây</button>
+          <button class="opt selected" data-timer="30" data-i18n="timer.30">30 giây</button>
+          <button class="opt" data-timer="0" data-i18n="timer.none">Không giới hạn</button>
+        </div>
+      </div>
+
+      <div class="menu-actions">
+        <button id="th-btn-start" class="btn-primary" data-i18n="btn.start">Bắt Đầu Chơi</button>
+        <button id="th-btn-tutorial" class="btn-secondary" data-i18n="btn.tutorial">Hướng Dẫn Chơi</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-tutorial-th" class="screen">
+    <div class="tutorial-wrap">
+      <button class="btn-link" data-back="menu-th" data-i18n="nav.back">← Quay lại</button>
+      <h1 class="section-title" data-i18n="th.tut.title">Cách Chơi Đầu Hồ</h1>
+
+      <div class="tut-card">
+        <h3 data-i18n="th.tut.1.title">1. Nguồn gốc</h3>
+        <p data-i18n="th.tut.1.body" data-i18n-html></p>
+      </div>
+      <div class="tut-card">
+        <h3 data-i18n="th.tut.2.title">2. Mục tiêu</h3>
+        <p data-i18n="th.tut.2.body" data-i18n-html></p>
+      </div>
+      <div class="tut-card">
+        <h3 data-i18n="th.tut.3.title">3. Cách ném</h3>
+        <p data-i18n="th.tut.3.body" data-i18n-html></p>
+      </div>
+      <div class="tut-card">
+        <h3 data-i18n="th.tut.4.title">4. Kết thúc & tính điểm</h3>
+        <p data-i18n="th.tut.4.body" data-i18n-html></p>
+      </div>
+
+      <button class="btn-primary" data-back="menu-th" data-i18n="btn.tut.done">Đã hiểu, bắt đầu chơi!</button>
+    </div>
+  </section>
+
+  <section id="screen-game-th" class="screen">
+    <div class="game-wrap">
+      <header class="game-header">
+        <button class="btn-link" data-back="menu-th" data-i18n="nav.back">← Menu</button>
+        <div class="turn-indicator" id="th-turn-indicator">
+          <span class="stone-dot black"></span>
+          <span id="th-turn-text">Lượt: Người 1</span>
+        </div>
+        <button id="th-btn-help" class="btn-icon" title="Hướng dẫn">?</button>
+      </header>
+
+      <div class="timer-bar-track"><div class="timer-bar-fill" id="th-timer-bar"></div></div>
+
+      <div class="th-scene">
+        <div class="th-pot">
+          <div class="th-pot-body"></div>
+          <div class="th-pot-mouth"></div>
+        </div>
+        <div class="th-arrow" id="th-arrow"></div>
+        <div class="th-thrower"></div>
+      </div>
+
+      <div class="th-meter-wrap">
+        <div class="meter-track">
+          <div class="meter-sweet-spot"></div>
+          <div class="meter-indicator" id="th-meter-indicator"></div>
+        </div>
+        <button id="th-btn-throw" class="btn-primary" data-i18n="th.btn.throw">Ném!</button>
+      </div>
+
+      <div class="score-bar">
+        <div class="score-chip black">
+          <span class="stone-dot black"></span> <span id="th-p1-label">Người 1</span> <span data-i18n="th.hits">— trúng:</span>
+          <b id="th-p1-hits">0</b>/<span id="th-p1-thrown">0</span>
+        </div>
+        <div class="score-chip white">
+          <span class="stone-dot white"></span> <span id="th-p2-label">Người 2</span> <span data-i18n="th.hits">— trúng:</span>
+          <b id="th-p2-hits">0</b>/<span id="th-p2-thrown">0</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- =====================  GAME 3: LỤC BÁC  ====================== -->
+  <!-- ============================================================= -->
+
+  <section id="screen-menu-lb" class="screen">
+    <div class="menu-wrap">
+      <button class="btn-link" data-back="home" data-i18n="nav.back.chooseGame">← Chọn trò chơi khác</button>
+      <h1 class="brand small"><span class="brand-glyph">博</span><span class="brand-sub" data-i18n="lb.title">LỤC BÁC</span></h1>
+      <p class="tagline" data-i18n="lb.tagline">Lục Bác</p>
+
+      <div class="menu-card">
+        <h2 data-i18n="mode.heading">Chế độ chơi</h2>
+        <div class="option-row two-col" id="lb-mode-options">
+          <button class="opt selected" data-mode="pvp"><span data-i18n="mode.pvp">2 Người</span><span data-i18n="mode.pvp.desc">Chơi cùng bạn bè</span></button>
+          <button class="opt" data-mode="ai"><span data-i18n="mode.ai">1 Người</span><span data-i18n="mode.ai.desc">Đấu với máy</span></button>
+        </div>
+        <div id="lb-ai-difficulty" class="option-row hidden">
+          <button class="opt selected" data-diff="easy" data-i18n="diff.easy">Dễ</button>
+          <button class="opt" data-diff="medium" data-i18n="diff.medium">Vừa</button>
+          <button class="opt" data-diff="hard" data-i18n="diff.hard">Khó</button>
+        </div>
+      </div>
+
+      <div class="menu-card">
+        <h2 data-i18n="timer.heading">Thời gian mỗi lượt</h2>
+        <div class="option-row" id="lb-timer-options">
+          <button class="opt" data-timer="15" data-i18n="timer.15">15 giây</button>
+          <button class="opt selected" data-timer="30" data-i18n="timer.30">30 giây</button>
+          <button class="opt" data-timer="0" data-i18n="timer.none">Không giới hạn</button>
+        </div>
+      </div>
+
+      <div class="menu-actions">
+        <button id="lb-btn-start" class="btn-primary" data-i18n="btn.start">Bắt Đầu Chơi</button>
+        <button id="lb-btn-tutorial" class="btn-secondary" data-i18n="btn.tutorial">Hướng Dẫn Chơi</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-tutorial-lb" class="screen">
+    <div class="tutorial-wrap">
+      <button class="btn-link" data-back="menu-lb" data-i18n="nav.back">← Quay lại</button>
+      <h1 class="section-title" data-i18n="lb.tut.title">Cách Chơi Lục Bác</h1>
+
+      <div class="tut-card">
+        <h3 data-i18n="lb.tut.1.title">1. Đôi nét lịch sử</h3>
+        <p data-i18n="lb.tut.1.body" data-i18n-html></p>
+      </div>
+      <div class="tut-card">
+        <h3 data-i18n="lb.tut.2.title">2. Cách chơi</h3>
+        <p data-i18n="lb.tut.2.body" data-i18n-html></p>
+      </div>
+      <div class="tut-card">
+        <h3 data-i18n="lb.tut.3.title">3. Chiến thắng</h3>
+        <p data-i18n="lb.tut.3.body" data-i18n-html></p>
+      </div>
+
+      <button class="btn-primary" data-back="menu-lb" data-i18n="btn.tut.done">Đã hiểu, bắt đầu chơi!</button>
+    </div>
+  </section>
+
+  <section id="screen-game-lb" class="screen">
+    <div class="game-wrap">
+      <header class="game-header">
+        <button class="btn-link" data-back="menu-lb" data-i18n="nav.back">← Menu</button>
+        <div class="turn-indicator" id="lb-turn-indicator">
+          <span class="stone-dot black"></span>
+          <span id="lb-turn-text">Lượt: Người 1</span>
+        </div>
+        <button id="lb-btn-help" class="btn-icon" title="Hướng dẫn">?</button>
+      </header>
+
+      <div class="timer-bar-track"><div class="timer-bar-fill" id="lb-timer-bar"></div></div>
+
+      <div class="lb-board-wrap">
+        <div class="lb-board" id="lb-board"></div>
+      </div>
+      <p class="lb-hint" id="lb-hint"></p>
+
+      <div class="lb-roll-row">
+        <div class="lb-dice" id="lb-dice"><span id="lb-dice-value">–</span></div>
+        <button id="lb-btn-roll" class="btn-primary" data-i18n="lb.btn.roll">Gieo Xúc Xắc</button>
+      </div>
+
+      <div class="score-bar">
+        <div class="score-chip black">
+          <span class="stone-dot black"></span> <span id="lb-p1-label">Người 1</span> <span data-i18n="lb.pieces.home">— về đích:</span>
+          <b id="lb-p1-home">0</b>/6
+        </div>
+        <div class="score-chip white">
+          <span class="stone-dot white"></span> <span id="lb-p2-label">Người 2</span> <span data-i18n="lb.pieces.home">— về đích:</span>
+          <b id="lb-p2-home">0</b>/6
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MODAL KẾT THÚC VÁN (DÙNG CHUNG) ================= -->
+  <div id="modal-result" class="modal hidden">
+    <div class="modal-box">
+      <h2 id="result-title" data-i18n="result.title.default">Ván chơi kết thúc</h2>
+      <p id="result-detail"></p>
+      <div class="modal-actions">
+        <button id="btn-replay" class="btn-primary" data-i18n="modal.btn.replay">Chơi Lại</button>
+        <button id="btn-to-menu" class="btn-secondary" data-i18n="modal.btn.menu">Về Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="settings.js"></script>
+  <script src="sound.js"></script>
+  <script src="common.js"></script>
+  <script src="go.js"></script>
+  <script src="touhu.js"></script>
+  <script src="lucbac.js"></script>
+</body>
+</html>

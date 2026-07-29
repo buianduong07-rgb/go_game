@@ -1,0 +1,854 @@
+/* ===========================================================
+   TRÒ CHƠI CỔ PHONG — bảng màu gỗ kaya ấm, mực đen, đỏ son (dấu triện)
+   Phông: Noto Serif (tiêu đề, đậm chất cổ điển) + Be Vietnam Pro (nội
+   dung, ho tro dau tieng Viet day du).
+   =========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:wght@600;700;900&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --wood-light: #d9b78c;
+  --wood-mid: #c19660;
+  --wood-dark: #8a6239;
+  --ink: #211d17;
+  --ink-soft: #46402f;
+  --paper: #efe6d6;
+  --paper-card: rgba(247, 241, 229, 0.82);
+  --paper-card-solid: #f7f1e5;
+  --seal-red: #a8382c;
+  --seal-red-dark: #7e281f;
+  --line-color: #4a3a24;
+  --shadow-raise: 0 4px 0 rgba(33,29,23,0.2), 0 8px 16px rgba(33,29,23,0.16);
+  --shadow-raise-hover: 0 7px 0 rgba(33,29,23,0.2), 0 14px 24px rgba(33,29,23,0.2);
+  --shadow-raise-press: 0 1px 0 rgba(33,29,23,0.2), 0 2px 6px rgba(33,29,23,0.14);
+}
+
+[data-theme="dark"] {
+  --ink: #f3ecdd;
+  --ink-soft: #d9cdb2;
+  --paper: #1b1712;
+  --paper-card: rgba(38, 32, 24, 0.82);
+  --paper-card-solid: #2a231a;
+  --seal-red: #e05a49;
+  --seal-red-dark: #b8402f;
+  --shadow-raise: 0 4px 0 rgba(0,0,0,0.5), 0 8px 18px rgba(0,0,0,0.5);
+  --shadow-raise-hover: 0 7px 0 rgba(0,0,0,0.5), 0 16px 26px rgba(0,0,0,0.55);
+  --shadow-raise-press: 0 1px 0 rgba(0,0,0,0.5), 0 3px 8px rgba(0,0,0,0.45);
+}
+[data-theme="dark"] .opt { background: #2a2318; color: var(--ink); border-color: rgba(243,236,221,0.14); }
+[data-theme="dark"] .opt span { color: var(--ink-soft); }
+[data-theme="dark"] .btn-secondary { background: #2a2318; color: var(--ink); border-color: rgba(243,236,221,0.16); }
+[data-theme="dark"] .bg-wash { background: rgba(20, 16, 12, 0.62); }
+[data-theme="dark"] .bg-sky { background: linear-gradient(180deg, #1c2440 0%, #2b2f57 35%, #3a2f52 70%, #2a1f30 100%); }
+[data-theme="dark"] .bg-sun {
+  background: radial-gradient(circle, rgba(230,230,255,0.9) 0%, rgba(180,190,255,0.4) 55%, rgba(180,190,255,0) 75%);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  color: var(--ink);
+  font-family: 'Be Vietnam Pro', -apple-system, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+  background: var(--paper);
+}
+
+/* =================== THANH CAI DAT =================== */
+.settings-bar {
+  position: fixed;
+  top: max(10px, env(safe-area-inset-top));
+  right: 12px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.settings-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid rgba(33,29,23,0.14);
+  background: var(--paper-card);
+  backdrop-filter: blur(6px);
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: var(--shadow-raise);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.settings-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-raise-hover); }
+.settings-btn:active { transform: translateY(1px); box-shadow: var(--shadow-raise-press); }
+.lang-switch {
+  display: flex;
+  background: var(--paper-card);
+  backdrop-filter: blur(6px);
+  border-radius: 999px;
+  padding: 3px;
+  box-shadow: var(--shadow-raise);
+}
+.lang-btn {
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 6px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.lang-btn.selected { background: var(--seal-red); color: #fff; }
+
+/* =================== BACKGROUND HOAT HINH CO TRANG =================== */
+.ancient-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #fce3b8 0%, #f7c988 22%, #f0a984 45%, #e08a8f 65%, #c97fa6 82%, #9a6bab 100%);
+}
+
+.bg-sun {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  width: 150px;
+  height: 150px;
+  margin-left: -75px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,247,214,0.98) 0%, rgba(255,196,130,0.6) 45%, rgba(255,150,150,0.28) 68%, rgba(255,150,150,0) 78%);
+  animation: sun-glow 6s ease-in-out infinite;
+}
+@keyframes sun-glow {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.07); }
+}
+
+.bg-cloud-layer {
+  position: absolute;
+  width: 220%;
+  height: 90px;
+  top: 14%;
+  left: 0;
+  background-repeat: repeat-x;
+  opacity: 0.7;
+}
+.bg-cloud-1 {
+  top: 10%;
+  background-image:
+    radial-gradient(ellipse 90px 26px at 10% 50%, rgba(255,241,224,0.9), transparent 70%),
+    radial-gradient(ellipse 70px 20px at 32% 40%, rgba(255,214,225,0.75), transparent 70%),
+    radial-gradient(ellipse 100px 28px at 60% 55%, rgba(255,236,196,0.85), transparent 70%);
+  background-size: 900px 90px;
+  animation: drift-cloud 70s linear infinite;
+}
+.bg-cloud-2 {
+  top: 24%;
+  background-image:
+    radial-gradient(ellipse 80px 22px at 20% 50%, rgba(228,210,255,0.6), transparent 70%),
+    radial-gradient(ellipse 110px 26px at 55% 45%, rgba(255,225,235,0.55), transparent 70%);
+  background-size: 760px 80px;
+  animation: drift-cloud 95s linear infinite reverse;
+}
+.bg-cloud-3 {
+  top: 4%;
+  background-image:
+    radial-gradient(ellipse 60px 18px at 45% 50%, rgba(255,255,255,0.5), transparent 70%);
+  background-size: 640px 60px;
+  animation: drift-cloud 55s linear infinite;
+}
+@keyframes drift-cloud {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.bg-mountain {
+  position: absolute;
+  bottom: 0;
+  width: 220%;
+  height: 42%;
+}
+.bg-mountain-far {
+  clip-path: polygon(0% 100%, 0% 62%, 8% 48%, 16% 64%, 24% 42%, 32% 60%, 42% 34%, 52% 58%,
+    60% 44%, 70% 62%, 78% 40%, 88% 60%, 96% 46%, 100% 62%, 100% 100%);
+  background: linear-gradient(180deg, rgba(154, 107, 171, 0.55), rgba(107, 78, 130, 0.5));
+  animation: drift-mtn 150s linear infinite;
+}
+.bg-mountain-mid {
+  height: 34%;
+  clip-path: polygon(0% 100%, 0% 66%, 9% 50%, 18% 66%, 27% 44%, 38% 64%, 48% 38%,
+    58% 62%, 68% 42%, 78% 64%, 88% 46%, 100% 64%, 100% 100%);
+  background: linear-gradient(180deg, rgba(94, 138, 122, 0.6), rgba(58, 96, 84, 0.58));
+  animation: drift-mtn 110s linear infinite reverse;
+}
+.bg-mountain-near {
+  height: 26%;
+  clip-path: polygon(0% 100%, 0% 72%, 10% 52%, 20% 70%, 30% 46%, 40% 68%, 50% 42%,
+    62% 66%, 72% 44%, 82% 68%, 92% 50%, 100% 70%, 100% 100%);
+  background: linear-gradient(180deg, rgba(58, 74, 44, 0.75), rgba(33, 48, 26, 0.8));
+  animation: drift-mtn 80s linear infinite;
+}
+@keyframes drift-mtn {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.bg-bamboo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 55%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 4%;
+  opacity: 0.34;
+}
+.bamboo-stalk {
+  position: relative;
+  width: 10px;
+  height: 100%;
+  background: linear-gradient(180deg, #3a4a2c, #21301a);
+  border-radius: 6px;
+  transform-origin: bottom center;
+  animation: bamboo-sway 5s ease-in-out infinite;
+}
+.bamboo-stalk.s1 { height: 70%; animation-duration: 4.5s; }
+.bamboo-stalk.s2 { height: 95%; animation-duration: 5.5s; animation-delay: .3s; }
+.bamboo-stalk.s3 { height: 60%; animation-duration: 4.8s; animation-delay: .6s; }
+.bamboo-stalk.s4 { height: 85%; animation-duration: 5.2s; animation-delay: .15s; }
+.bamboo-stalk span {
+  position: absolute;
+  width: 34px;
+  height: 10px;
+  background: #2f4222;
+  border-radius: 0 60% 0 60%;
+  left: 6px;
+}
+.bamboo-stalk span:nth-child(1) { top: 15%; }
+.bamboo-stalk span:nth-child(2) { top: 35%; transform: scaleX(-1); left: -28px; }
+.bamboo-stalk span:nth-child(3) { top: 55%; }
+@keyframes bamboo-sway {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+.bg-lantern {
+  position: absolute;
+  top: 20%;
+  right: 12%;
+  width: 34px;
+  height: 46px;
+  border-radius: 50% 50% 45% 45%;
+  background: radial-gradient(circle at 50% 40%, #ffcf6b, var(--seal-red) 85%);
+  box-shadow: 0 0 24px 6px rgba(255, 178, 60, 0.55);
+  animation: lantern-swing 4.5s ease-in-out infinite;
+  transform-origin: top center;
+}
+@keyframes lantern-swing {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+
+.bg-wash {
+  position: absolute;
+  inset: 0;
+  background: rgba(239, 230, 214, 0.24);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-sun, .bg-cloud-layer, .bg-mountain, .bamboo-stalk, .bg-lantern { animation: none !important; }
+}
+
+/* =================== KHUNG MAN HINH =================== */
+.screen {
+  position: relative;
+  z-index: 1;
+  display: none;
+  min-height: 100vh;
+  width: 100%;
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+.screen.active { display: block; }
+
+h1, h2, h3 {
+  font-family: 'Noto Serif', Georgia, serif;
+  color: var(--ink);
+  margin: 0 0 8px;
+}
+
+/* ---------------- MENU / TRANG CHU ---------------- */
+.menu-wrap {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 40px 22px 40px;
+  text-align: center;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.brand-glyph {
+  font-family: 'Noto Serif', serif;
+  font-size: 46px;
+  line-height: 1;
+  color: var(--seal-red);
+  background: rgba(255,255,255,0.35);
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-raise);
+}
+.brand.small .brand-glyph { font-size: 32px; width: 56px; height: 56px; border-radius: 16px; }
+.brand-sub {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--ink);
+  letter-spacing: 4px;
+}
+.brand.small .brand-sub { font-size: 21px; letter-spacing: 3px; }
+
+.tagline {
+  color: var(--ink-soft);
+  font-size: 14px;
+  margin: 6px 0 30px;
+  font-weight: 500;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 0 18px;
+  display: inline-block;
+  transition: color .15s ease, transform .15s ease;
+}
+.btn-link:hover { color: var(--seal-red); transform: translateX(-2px); }
+
+/* ---------------- LUA CHON GAME (TRANG CHU) ---------------- */
+.game-card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 8px;
+}
+.game-card-grid.three { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 560px) {
+  .game-card-grid.three { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 420px) {
+  .game-card-grid { grid-template-columns: 1fr; }
+  .game-card-grid.three { grid-template-columns: 1fr; }
+}
+.game-card {
+  background: var(--paper-card);
+  backdrop-filter: blur(6px);
+  border: 2px solid rgba(33,29,23,0.1);
+  border-radius: 20px;
+  padding: 28px 16px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: var(--shadow-raise);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.game-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-raise-hover); border-color: var(--seal-red); }
+.game-card:active { transform: translateY(1px); box-shadow: var(--shadow-raise-press); }
+.game-card-glyph {
+  font-family: 'Noto Serif', serif;
+  font-size: 44px;
+  color: var(--seal-red);
+}
+.game-card-title {
+  font-family: 'Noto Serif', serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.game-card-desc {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+/* ---------------- THE MENU / OPTION ---------------- */
+.menu-card {
+  background: var(--paper-card);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(33,29,23,0.08);
+  border-radius: 16px;
+  padding: 18px 18px 20px;
+  margin-bottom: 18px;
+  text-align: left;
+  box-shadow: 0 2px 10px rgba(33,29,23,0.08);
+}
+.menu-card h2 {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 13.5px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+
+.option-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.option-row.two-col { grid-template-columns: repeat(2, 1fr); }
+.option-row.hidden { display: none; }
+.option-row + .option-row { margin-top: 10px; }
+
+.opt {
+  background: #fff;
+  border: 2px solid rgba(33,29,23,0.12);
+  border-radius: 12px;
+  padding: 13px 8px;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  min-height: 62px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow: var(--shadow-raise);
+  transition: transform .12s ease, box-shadow .12s ease, background .15s ease, color .15s ease, border-color .15s ease;
+}
+.opt span { font-size: 10.5px; font-weight: 500; color: var(--ink-soft); text-align: center; }
+.opt:hover { transform: translateY(-3px); box-shadow: var(--shadow-raise-hover); }
+.opt:active { transform: translateY(1px); box-shadow: var(--shadow-raise-press); }
+.opt.selected {
+  border-color: var(--seal-red);
+  background: #fdf1ef;
+  color: var(--seal-red);
+}
+.opt.selected span { color: var(--seal-red); opacity: 0.8; }
+
+.menu-actions {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+/* ---------------- NUT CHINH (HIEU UNG NOI LEN) ---------------- */
+.btn-primary, .btn-secondary {
+  border: none;
+  border-radius: 14px;
+  padding: 16px;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 15.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-raise);
+  transition: transform .12s ease, box-shadow .12s ease, opacity .15s ease;
+}
+.btn-primary {
+  background: var(--seal-red);
+  color: #fff;
+}
+.btn-secondary {
+  background: #fff;
+  color: var(--ink);
+  border: 2px solid rgba(33,29,23,0.14);
+}
+.btn-secondary.danger { color: var(--seal-red); border-color: rgba(168,56,44,0.35); }
+
+.btn-primary:hover, .btn-secondary:hover { transform: translateY(-3px); box-shadow: var(--shadow-raise-hover); }
+.btn-primary:active, .btn-secondary:active { transform: translateY(1px); box-shadow: var(--shadow-raise-press); }
+.btn-primary:disabled, .btn-secondary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: var(--shadow-raise); }
+
+/* ---------------- TUTORIAL ---------------- */
+.tutorial-wrap {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+.section-title { font-size: 25px; margin: 10px 0 20px; }
+.tut-card {
+  background: var(--paper-card);
+  backdrop-filter: blur(6px);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(33,29,23,0.08);
+}
+.tut-card h3 { font-size: 17px; color: var(--seal-red); }
+.tut-card p { line-height: 1.65; margin: 0; font-size: 14.5px; color: var(--ink-soft); }
+.tutorial-wrap > .btn-primary { width: 100%; margin-top: 6px; }
+
+/* ---------------- GAME WRAP (DUNG CHUNG) ---------------- */
+.game-wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 14px 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0 10px;
+}
+.game-header .btn-link { padding: 0; }
+
+.turn-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 15px;
+  background: var(--paper-card);
+  backdrop-filter: blur(6px);
+  padding: 8px 16px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(33,29,23,0.1);
+}
+
+.stone-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: inset -2px -2px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.3);
+}
+.stone-dot.black { background: radial-gradient(circle at 35% 30%, #5a5a5a, #050505 70%); }
+.stone-dot.white { background: radial-gradient(circle at 35% 30%, #ffffff, #cfcdc4 75%); border: 1px solid #b8b6ad; }
+
+.btn-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid rgba(33,29,23,0.14);
+  background: #fff;
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  color: var(--ink-soft);
+  box-shadow: var(--shadow-raise);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn-icon:hover { transform: translateY(-2px); box-shadow: var(--shadow-raise-hover); }
+.btn-icon:active { transform: translateY(1px); box-shadow: var(--shadow-raise-press); }
+
+.board-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 0;
+}
+
+#board-canvas {
+  width: 100%;
+  max-width: 560px;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(33,29,23,0.28);
+  touch-action: manipulation;
+}
+
+.score-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 14px 0;
+}
+.score-chip {
+  background: var(--paper-card);
+  backdrop-filter: blur(6px);
+  border-radius: 12px;
+  padding: 11px 14px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  box-shadow: 0 2px 8px rgba(33,29,23,0.08);
+}
+.score-chip b { color: var(--ink); font-size: 15px; }
+
+.game-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.game-actions.three-col { grid-template-columns: repeat(3, 1fr); }
+.game-actions button { padding: 13px 6px; font-size: 13.5px; }
+
+/* ---------------- CANH DAU HO ---------------- */
+.th-scene {
+  position: relative;
+  height: 220px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin: 10px 0 4px;
+}
+.th-pot {
+  position: relative;
+  width: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.th-pot-mouth {
+  width: 46px;
+  height: 14px;
+  border-radius: 50%;
+  background: #2b2118;
+  border: 3px solid #d9b78c;
+  box-shadow: inset 0 3px 4px rgba(0,0,0,0.5);
+}
+.th-pot-body {
+  width: 60px;
+  height: 110px;
+  margin-top: -6px;
+  border-radius: 10px 10px 26px 26px / 14px 14px 40px 40px;
+  background: linear-gradient(135deg, #c9a06c, #8a6239 55%, #6b4a29);
+  box-shadow: 0 8px 16px rgba(33,29,23,0.3), inset -8px 0 12px rgba(0,0,0,0.2);
+  border: 2px solid #5a3c22;
+}
+.th-arrow {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  width: 5px;
+  height: 46px;
+  background: linear-gradient(180deg, #e8483a, #6b2018 70%, #3a1410);
+  border-radius: 3px 3px 1px 1px;
+  transform: translate(-50%, 0);
+  transform-origin: bottom center;
+}
+.th-arrow::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 9px solid #3a1410;
+}
+.th-thrower {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 44px;
+  background: linear-gradient(180deg, var(--seal-red), var(--seal-red-dark));
+  border-radius: 10px 10px 4px 4px;
+  box-shadow: 0 4px 8px rgba(33,29,23,0.25);
+}
+
+.th-meter-wrap {
+  background: var(--paper-card);
+  backdrop-filter: blur(6px);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 2px 10px rgba(33,29,23,0.08);
+  margin-bottom: 12px;
+}
+.meter-track {
+  position: relative;
+  height: 22px;
+  background: linear-gradient(180deg, #e5d7bd, #cbb28a);
+  border-radius: 999px;
+  border: 2px solid rgba(33,29,23,0.15);
+  overflow: hidden;
+}
+.meter-sweet-spot {
+  position: absolute;
+  left: 40%;
+  width: 20%;
+  top: 0;
+  bottom: 0;
+  background: rgba(232, 178, 39, 0.55);
+  border-left: 2px solid rgba(168,56,44,0.5);
+  border-right: 2px solid rgba(168,56,44,0.5);
+}
+.meter-indicator {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 8px;
+  border-radius: 4px;
+  background: var(--seal-red);
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 6px rgba(168,56,44,0.7);
+}
+.th-meter-wrap .btn-primary { width: 100%; }
+
+/* ---------------- DONG HO DEM GIO MOI LUOT ---------------- */
+.timer-bar-track {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(33,29,23,0.12);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.timer-bar-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #4a9d6e, #7fbf8f);
+  border-radius: 999px;
+  transition: width 0.1s linear, background 0.3s ease;
+}
+.timer-bar-fill.danger {
+  background: linear-gradient(90deg, var(--seal-red-dark), var(--seal-red));
+}
+
+/* ---------------- BAN LUC BAC ---------------- */
+.lb-board-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0;
+}
+.lb-board {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 1 / 1;
+  background: linear-gradient(135deg, #dcb98d, #b98c56);
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(33,29,23,0.25);
+}
+.lb-cell {
+  position: absolute;
+  width: 13%;
+  height: 13%;
+  transform: translate(-50%, -50%);
+  background: rgba(255,255,255,0.35);
+  border: 2px solid rgba(74,58,36,0.4);
+  border-radius: 8px;
+}
+.lb-cell.entry-p1 { background: rgba(90,90,90,0.35); border-color: #050505; }
+.lb-cell.entry-p2 { background: rgba(255,255,255,0.6); border-color: #b8b6ad; }
+.lb-piece {
+  position: absolute;
+  width: 11%;
+  height: 11%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  transition: left 0.35s ease, top 0.35s ease;
+}
+.lb-piece.p1 { background: radial-gradient(circle at 35% 30%, #5a5a5a, #050505 70%); }
+.lb-piece.p2 { background: radial-gradient(circle at 35% 30%, #ffffff, #cfcdc4 75%); border: 1px solid #b8b6ad; }
+.lb-piece.movable {
+  outline: 3px solid var(--seal-red);
+  cursor: pointer;
+  animation: piece-pulse 1s ease-in-out infinite;
+}
+@keyframes piece-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.18); }
+}
+
+.lb-hint {
+  text-align: center;
+  font-size: 13px;
+  color: var(--seal-red);
+  font-weight: 700;
+  min-height: 18px;
+  margin: 4px 0 8px;
+}
+
+.lb-roll-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.lb-dice {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  background: var(--paper-card-solid);
+  border: 2px solid rgba(33,29,23,0.16);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--seal-red);
+  box-shadow: var(--shadow-raise);
+}
+.lb-dice.rolling { animation: dice-spin 0.4s ease; }
+@keyframes dice-spin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.15); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+.lb-roll-row .btn-primary { flex: 1; }
+
+/* ---------------- MODAL ---------------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(33,29,23,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 20px;
+}
+.modal.hidden { display: none; }
+.modal-box {
+  background: var(--paper-card-solid);
+  border-radius: 18px;
+  padding: 28px 24px;
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 14px 46px rgba(0,0,0,0.34);
+}
+.modal-box p {
+  color: var(--ink-soft);
+  line-height: 1.6;
+  margin: 10px 0 22px;
+  font-size: 14.5px;
+}
+.modal-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (min-width: 420px) {
+  .modal-actions { grid-template-columns: 1fr 1fr; }
+}
