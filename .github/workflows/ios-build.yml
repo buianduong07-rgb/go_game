@@ -49,6 +49,8 @@ jobs:
           P12: ${{ secrets.P12_CERTIFICATE_BASE64 }}
           PROFILE: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
           API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASS: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
         run: |
           if [ -n "$P12" ] && [ -n "$PROFILE" ]; then
             echo "has_secrets=true" >> $GITHUB_OUTPUT
@@ -59,10 +61,17 @@ jobs:
             echo "👉 Workflow sẽ tự động build kiểm tra (Unsigned Build) và tạo file cài đặt để bạn tải về."
           fi
 
-          if [ -n "$API_KEY" ]; then
-            echo "has_api_key=true" >> $GITHUB_OUTPUT
+          if [ -n "$APPLE_ID" ] && [ -n "$APPLE_PASS" ]; then
+            echo "can_upload=true" >> $GITHUB_OUTPUT
+            echo "upload_method=credentials" >> $GITHUB_OUTPUT
+            echo "✅ Sẽ tự động upload lên App Store Connect bằng Apple ID & App-Specific Password!"
+          elif [ -n "$API_KEY" ]; then
+            echo "can_upload=true" >> $GITHUB_OUTPUT
+            echo "upload_method=api_key" >> $GITHUB_OUTPUT
+            echo "✅ Sẽ tự động upload lên App Store Connect bằng API Key!"
           else
-            echo "has_api_key=false" >> $GITHUB_OUTPUT
+            echo "can_upload=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ Chưa cấu hình thông tin upload tự động. File IPA sẽ được lưu trong Artifacts."
           fi
 
       # ========== SIGNING SETUP (Chạy khi ĐÃ có secrets) ==========
@@ -168,22 +177,44 @@ jobs:
             -allowProvisioningUpdates
 
       - name: 🚀 Upload to App Store Connect
-        if: steps.check_secrets.outputs.has_secrets == 'true' && steps.check_secrets.outputs.has_api_key == 'true'
+        if: steps.check_secrets.outputs.has_secrets == 'true' && steps.check_secrets.outputs.can_upload == 'true'
         env:
+          UPLOAD_METHOD: ${{ steps.check_secrets.outputs.upload_method }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
           API_KEY_ID: ${{ secrets.API_KEY_ID }}
           API_ISSUER_ID: ${{ secrets.API_ISSUER_ID }}
         run: |
-          mkdir -p ~/private_keys
-          echo "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode > ~/private_keys/AuthKey_${API_KEY_ID}.p8
+          IPA_FILE=$(find $RUNNER_TEMP/output -name "*.ipa" | head -n 1)
+          echo "📦 Chuẩn bị upload: $IPA_FILE"
 
-          xcrun altool --upload-app \
-            --type ios \
-            --file $RUNNER_TEMP/output/*.ipa \
-            --apiKey "$API_KEY_ID" \
-            --apiIssuer "$API_ISSUER_ID"
+          if [ "$UPLOAD_METHOD" = "credentials" ]; then
+            echo "🔐 Đang upload lên App Store Connect bằng Apple ID ($APPLE_ID)..."
+            xcrun altool --upload-app \
+              --type ios \
+              --file "$IPA_FILE" \
+              --username "$APPLE_ID" \
+              --password "$APPLE_APP_SPECIFIC_PASSWORD" \
+              --asc-provider "$APPLE_TEAM_ID" 2>/dev/null || \
+            xcrun altool --upload-app \
+              --type ios \
+              --file "$IPA_FILE" \
+              --username "$APPLE_ID" \
+              --password "$APPLE_APP_SPECIFIC_PASSWORD"
+          else
+            echo "🔐 Đang upload lên App Store Connect bằng API Key..."
+            mkdir -p ~/private_keys
+            python3 -c "import base64, os; open(os.path.expanduser('~/private_keys/AuthKey_${API_KEY_ID}.p8'), 'wb').write(base64.b64decode(os.environ['APP_STORE_CONNECT_API_KEY_BASE64']))"
 
-          echo "✅ Đã upload thành công lên App Store Connect!"
+            xcrun altool --upload-app \
+              --type ios \
+              --file "$IPA_FILE" \
+              --apiKey "$API_KEY_ID" \
+              --apiIssuer "$API_ISSUER_ID"
+          fi
+
+          echo "🎉 Upload lên App Store Connect thành công rực rỡ!"
 
       # ========== UNSIGNED BUILD (Tự động chạy khi CHƯA có secrets) ==========
       - name: 🔨 Build iOS Project (Unsigned / Kiểm tra code)
