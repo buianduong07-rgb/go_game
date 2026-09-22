@@ -25,12 +25,12 @@ const iconSun = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" str
   function applyTheme() {
     document.documentElement.setAttribute("data-theme", window.settings.theme);
     const btn = document.getElementById("btn-theme-toggle");
-    if (btn) btn.innerHTML = window.settings.theme === "dark" ? iconSun : iconMoon;
+    if (btn) btn.textContent = window.settings.theme === "dark" ? "☀️" : "🌙";
   }
 
   function applySoundBtn() {
     const btn = document.getElementById("btn-sound-toggle");
-    if (btn) btn.innerHTML = window.settings.sound ? iconSoundOn : iconSoundOff;
+    if (btn) btn.textContent = window.settings.sound ? "🔊" : "🔇";
   }
 
   function applyLangButtons() {
@@ -70,6 +70,7 @@ const iconSun = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" str
       window.settings.theme = window.settings.theme === "dark" ? "light" : "dark";
       applyTheme();
       persist();
+      window.dispatchEvent(new CustomEvent("themechange", { detail: { theme: window.settings.theme } }));
     });
 
     const soundBtn = document.getElementById("btn-sound-toggle");

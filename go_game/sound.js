@@ -1,8 +1,11 @@
 /* ===========================================================
-   SFX & NHẠC NỀN NHÃ NHẠC CUNG ĐÌNH HUẾ — Web Audio API
+   SFX & NHẠC NỀN AUDIO — TRÒ CHƠI CỔ PHONG
+   Phát bài nhạc nền từ file audio (M4A / WebM / MP3) kết hợp
+   hiệu ứng âm thanh trò chơi (SFX) bằng Web Audio API.
    =========================================================== */
 (function () {
   let ctx = null;
+  let bgmAudio = null;
 
   function getAudioContext() {
     if (!ctx) {
@@ -16,6 +19,65 @@
     return ctx;
   }
 
+  // =================== TRÌNH PHÁT NHẠC NỀN (AUDIO BGM) ===================
+  function initBgmAudio() {
+    if (bgmAudio) return bgmAudio;
+    try {
+      bgmAudio = new Audio();
+      bgmAudio.loop = true;
+      bgmAudio.volume = 0.45;
+      bgmAudio.preload = "auto";
+
+      // Hỗ trợ cả file m4a và webm
+      if (bgmAudio.canPlayType("audio/mp4")) {
+        bgmAudio.src = "bgm.m4a";
+      } else if (bgmAudio.canPlayType("audio/webm")) {
+        bgmAudio.src = "bgm.webm";
+      } else {
+        bgmAudio.src = "bgm.m4a";
+      }
+    } catch (e) {
+      bgmAudio = null;
+    }
+    return bgmAudio;
+  }
+
+  function startBGM() {
+    if (window.settings && window.settings.sound === false) return;
+    const audio = initBgmAudio();
+    if (!audio) return;
+
+    audio.volume = 0.45;
+    const promise = audio.play();
+    if (promise !== undefined) {
+      promise.catch(() => {
+        // Tự động thử lại khi có tương tác người dùng
+      });
+    }
+  }
+
+  function stopBGM() {
+    if (bgmAudio) {
+      bgmAudio.pause();
+    }
+  }
+
+  function triggerBGM() {
+    const c = getAudioContext();
+    if (c && c.state === "suspended") {
+      c.resume().catch(() => {});
+    }
+    if (window.settings && window.settings.sound !== false) {
+      startBGM();
+    }
+  }
+
+  // Tự động kích hoạt khi chạm hoặc click màn hình lần đầu
+  ['pointerdown', 'touchstart', 'mousedown', 'click', 'keydown'].forEach(evt => {
+    window.addEventListener(evt, triggerBGM, { passive: true });
+  });
+
+  // =================== HIỆU ỨNG ÂM THANH TRÒ CHƠI (SFX) ===================
   function tone(freq, duration, type, gainStart) {
     if (window.settings && window.settings.sound === false) return;
     const c = getAudioContext();
@@ -50,253 +112,6 @@
       src.start();
     } catch (e) {}
   }
-
-  // ================= NHÃ NHẠC CUNG ĐÌNH HUẾ (HUE IMPERIAL COURT MUSIC) =================
-  let bgmTimer = null;
-  let bgmStep = 0;
-  let isBgmRunning = false;
-  let droneOsc = null;
-  let droneGain = null;
-
-  // Thang âm ngũ cung Nhã Nhạc Huế (Điệu Nam/Điệu Bắc: D4, F4, G4, A4, C5, D5, F5, G5)
-  // [freq, duration, instrumentType: 'tranh'|'sao'|'tyba', HasPhach: boolean]
-  const hueCourtMelody = [
-    // --- Đoạn 1: Đăng Đàn Cung (Mở đầu uy nghiêm) ---
-    [293.66, 1.8, 'tranh', true],   // D4 (Hò) + Phách
-    [349.23, 1.2, 'sao', false],     // F4 (Xự)
-    [392.00, 1.6, 'tranh', false],   // G4 (Xang)
-    [440.00, 2.2, 'tyba', true],     // A4 (Xê) + Phách
-    [523.25, 1.3, 'sao', false],     // C5 (Cống)
-    [587.33, 1.8, 'tranh', false],   // D5 (Líu)
-    [440.00, 1.6, 'sao', false],     // A4
-    [392.00, 2.2, 'tranh', true],    // G4 + Phách
-    [0, 0.6, 'none', false],
-
-    // --- Đoạn 2: Lưu Thủy - Kim Tiền (Du dương, luyến láy Huế) ---
-    [349.23, 1.4, 'tranh', false],   // F4
-    [392.00, 1.1, 'tyba', false],    // G4
-    [440.00, 1.6, 'sao', true],      // A4 + Phách
-    [523.25, 1.4, 'tranh', false],   // C5
-    [587.33, 2.0, 'sao', false],     // D5
-    [698.46, 1.3, 'tranh', true],    // F5 + Phách
-    [587.33, 1.6, 'tyba', false],    // D5
-    [523.25, 2.2, 'tranh', true],    // C5 + Phách
-    [0, 0.8, 'none', false],
-
-    // --- Đoạn 3: Phú Lục (Trang trọng, sâu lắng) ---
-    [440.00, 1.6, 'sao', false],     // A4
-    [392.00, 1.3, 'tranh', true],    // G4 + Phách
-    [349.23, 1.6, 'tyba', false],    // F4
-    [293.66, 2.4, 'tranh', true],    // D4 + Phách
-    [392.00, 1.4, 'sao', false],     // G4
-    [440.00, 1.8, 'tranh', false],   // A4
-    [523.25, 2.2, 'tyba', true],     // C5 + Phách
-    [0, 1.0, 'none', false],
-  ];
-
-  // 1. Giả lập Tiếng Đàn Tranh Huế (Plucked String + Vibrato/Nhún)
-  function playDanTranh(c, freq, duration, time) {
-    if (freq === 0) return;
-    try {
-      const osc = c.createOscillator();
-      const gain = c.createGain();
-      const vibrato = c.createOscillator();
-      const vibratoGain = c.createGain();
-
-      vibrato.frequency.value = 5.5;
-      vibratoGain.gain.value = freq * 0.015;
-      vibrato.connect(vibratoGain).connect(osc.frequency);
-
-      osc.type = "triangle";
-      osc.frequency.setValueAtTime(freq, time);
-
-      gain.gain.setValueAtTime(0, time);
-      gain.gain.linearRampToValueAtTime(0.28, time + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
-
-      vibrato.start(time);
-      osc.connect(gain).connect(c.destination);
-      osc.start(time);
-      osc.stop(time + duration + 0.1);
-      vibrato.stop(time + duration + 0.1);
-    } catch (e) {}
-  }
-
-  // 2. Giả lập Tiếng Sáo Trúc Huế (Bamboo Flute + Soft Bend)
-  function playSaoTruc(c, freq, duration, time) {
-    if (freq === 0) return;
-    try {
-      const osc = c.createOscillator();
-      const gain = c.createGain();
-
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(freq * 0.96, time);
-      osc.frequency.exponentialRampToValueAtTime(freq, time + 0.08);
-
-      gain.gain.setValueAtTime(0, time);
-      gain.gain.linearRampToValueAtTime(0.22, time + 0.08);
-      gain.gain.setValueAtTime(0.22, time + duration * 0.7);
-      gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
-
-      osc.connect(gain).connect(c.destination);
-      osc.start(time);
-      osc.stop(time + duration + 0.1);
-    } catch (e) {}
-  }
-
-  // 3. Giả lập Tiếng Đàn Tỳ Bà Huế (Strummed Lute)
-  function playDanTyBa(c, freq, duration, time) {
-    if (freq === 0) return;
-    try {
-      const osc1 = c.createOscillator();
-      const osc2 = c.createOscillator();
-      const gain = c.createGain();
-
-      osc1.type = "sawtooth";
-      osc2.type = "triangle";
-      osc1.frequency.setValueAtTime(freq, time);
-      osc2.frequency.setValueAtTime(freq * 2, time);
-
-      gain.gain.setValueAtTime(0, time);
-      gain.gain.linearRampToValueAtTime(0.22, time + 0.015);
-      gain.gain.exponentialRampToValueAtTime(0.0001, time + duration * 0.85);
-
-      const filter = c.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.value = 2200;
-
-      osc1.connect(filter);
-      osc2.connect(filter);
-      filter.connect(gain).connect(c.destination);
-
-      osc1.start(time);
-      osc2.start(time);
-      osc1.stop(time + duration + 0.1);
-      osc2.stop(time + duration + 0.1);
-    } catch (e) {}
-  }
-
-  // 4. Giả lập Tiếng Phách / Thanh La Cung Đình (Wood Clapper / Metallic Bell Touch)
-  function playPhachHue(c, time) {
-    try {
-      const osc = c.createOscillator();
-      const gain = c.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(1200, time);
-      osc.frequency.exponentialRampToValueAtTime(400, time + 0.04);
-
-      gain.gain.setValueAtTime(0.25, time);
-      gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.06);
-
-      osc.connect(gain).connect(c.destination);
-      osc.start(time);
-      osc.stop(time + 0.07);
-
-      const gong = c.createOscillator();
-      const gongGain = c.createGain();
-      gong.type = "sine";
-      gong.frequency.setValueAtTime(2400, time);
-
-      gongGain.gain.setValueAtTime(0.08, time);
-      gongGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.45);
-
-      gong.connect(gongGain).connect(c.destination);
-      gong.start(time);
-      gong.stop(time + 0.5);
-    } catch (e) {}
-  }
-
-  // Nốt Trống Nhã Nhạc nền trầm (Hue Court Bass Drum)
-  function startHueCourtDrone(c) {
-    if (droneOsc) return;
-    try {
-      droneOsc = c.createOscillator();
-      droneGain = c.createGain();
-      droneOsc.type = "sine";
-      droneOsc.frequency.value = 110.0;
-      droneGain.gain.setValueAtTime(0, c.currentTime);
-      droneGain.gain.linearRampToValueAtTime(0.08, c.currentTime + 1.5);
-      droneOsc.connect(droneGain).connect(c.destination);
-      droneOsc.start();
-    } catch (e) {}
-  }
-
-  function stopHueCourtDrone() {
-    if (droneOsc) {
-      try { droneOsc.stop(); } catch(e) {}
-      droneOsc = null;
-      droneGain = null;
-    }
-  }
-
-  function startBGM() {
-    stopBGM();
-    if (window.settings && window.settings.sound === false) return;
-    const c = getAudioContext();
-    if (!c) return;
-
-    isBgmRunning = true;
-    startHueCourtDrone(c);
-    bgmStep = 0;
-
-    function playNextNote() {
-      if (!isBgmRunning || (window.settings && window.settings.sound === false)) {
-        stopBGM();
-        return;
-      }
-      const c = getAudioContext();
-      if (!c) return;
-
-      const [freq, dur, inst, hasPhach] = hueCourtMelody[bgmStep % hueCourtMelody.length];
-      const now = c.currentTime;
-
-      if (hasPhach) {
-        playPhachHue(c, now);
-      }
-
-      if (inst === 'tranh') {
-        playDanTranh(c, freq, dur, now);
-      } else if (inst === 'sao') {
-        playSaoTruc(c, freq, dur, now);
-      } else if (inst === 'tyba') {
-        playDanTyBa(c, freq, dur, now);
-      }
-
-      bgmStep++;
-      bgmTimer = setTimeout(playNextNote, dur * 1000);
-    }
-
-    playNextNote();
-  }
-
-  function stopBGM() {
-    isBgmRunning = false;
-    if (bgmTimer) {
-      clearTimeout(bgmTimer);
-      bgmTimer = null;
-    }
-    stopHueCourtDrone();
-  }
-
-  function triggerBGM() {
-    const c = getAudioContext();
-    if (c && c.state === "suspended") {
-      c.resume().then(() => {
-        if (!isBgmRunning && (!window.settings || window.settings.sound !== false)) {
-          startBGM();
-        }
-      }).catch(() => {});
-    } else {
-      if (!isBgmRunning && (!window.settings || window.settings.sound !== false)) {
-        startBGM();
-      }
-    }
-  }
-
-  // Tự động kích hoạt khi người dùng chạm vào bất cứ đâu
-  ['pointerdown', 'touchstart', 'mousedown', 'click', 'keydown'].forEach(evt => {
-    window.addEventListener(evt, triggerBGM);
-  });
 
   window.SFX = {
     stone() { tone(320, 0.12, "square", 0.25); },

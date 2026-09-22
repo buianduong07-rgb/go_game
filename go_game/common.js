@@ -3,6 +3,45 @@
    cho ca game Co Vay va game Dau Ho.
    =========================================================== */
 
+// Man hinh nap khoi tao (Splash Loading 0%-100%)
+(function initSplashProgress() {
+  const splash = document.getElementById("web-splash-screen");
+  const fill = document.getElementById("splash-progress-fill");
+  const text = document.getElementById("splash-progress-text");
+  const sub = document.getElementById("splash-sub-text");
+  if (!splash || !fill || !text) return;
+
+  let progress = 0;
+  const stages = [
+    { target: 25, text: "Đang nạp dữ liệu cờ..." },
+    { target: 55, text: "Đang tải phong cảnh cổ trang..." },
+    { target: 80, text: "Đang chuẩn bị âm nhạc hoàng cung..." },
+    { target: 100, text: "Sẵn sàng vào game!" }
+  ];
+
+  let stageIdx = 0;
+  const timer = setInterval(() => {
+    progress += Math.floor(Math.random() * 7) + 5;
+    if (progress > 100) progress = 100;
+
+    fill.style.width = progress + "%";
+    text.textContent = progress + "%";
+
+    if (stageIdx < stages.length && progress >= stages[stageIdx].target) {
+      if (sub) sub.textContent = stages[stageIdx].text;
+      stageIdx++;
+    }
+
+    if (progress >= 100) {
+      clearInterval(timer);
+      setTimeout(() => {
+        splash.classList.add("fade-out");
+        setTimeout(() => splash.remove(), 450);
+      }, 350);
+    }
+  }, 40);
+})();
+
 function showScreen(name) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
   const el = document.getElementById("screen-" + name);

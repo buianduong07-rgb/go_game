@@ -1,7 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Chinese Games</string>
-    <string name="title_activity_main">Chinese Games</string>
-    <string name="package_name">com.quanh.cogame</string>
-    <string name="custom_url_scheme">com.quanh.cogame</string>
+    <string name="app_name">Trò Chơi Cổ Phong</string>
+    <string name="title_activity_main">Trò Chơi Cổ Phong</string>
+    <string name="package_name">com.vn.mv.chinesegames</string>
+    <string name="custom_url_scheme">com.vn.mv.chinesegames</string>
 </resources>
+
+

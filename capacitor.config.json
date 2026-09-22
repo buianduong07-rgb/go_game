@@ -1,5 +1,15 @@
 {
-  "appId": "com.quanh.cogame",
-  "appName": "Chinese Game",
-  "webDir": "go_game"
+  "appId": "com.vn.mv.chinesegames",
+  "appName": "Trò Chơi Cổ Phong",
+  "webDir": "go_game",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0,
+      "launchAutoHide": true,
+      "backgroundColor": "#1b1712",
+      "showSpinner": false
+    }
+  }
 }
+
+

@@ -6,3 +6,5 @@ ios/App/Pods/
 ios/App/DerivedData/
 *.log
 .DS_Store
+go_game/bgm.m4a
+yt-dlp.exe

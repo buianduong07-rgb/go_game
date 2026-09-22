@@ -1,6 +1,6 @@
 @echo off
-set "JAVA_HOME=C:\Program Files\Android\Android Studio\jbr"
-set "ANDROID_HOME=C:\Users\DELL\AppData\Local\Android\Sdk"
+set "JAVA_HOME=C:\AndroidSDK\jdk21\jdk-21.0.4+7"
+set "ANDROID_HOME=C:\AndroidSDK"
 set "PATH=%JAVA_HOME%\bin;%PATH%"
 set "GRADLE_OPTS=-Xmx1024m"
 echo [BUILD] Starting Gradle bundleRelease (skipping lint)... > build_out.log
