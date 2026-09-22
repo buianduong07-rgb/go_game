@@ -44,16 +44,24 @@ jobs:
       # ========== KIỂM TRA SECRETS ==========
       - name: 🔍 Kiểm tra Apple signing secrets
         id: check_secrets
+        env:
+          P12: ${{ secrets.P12_CERTIFICATE_BASE64 }}
+          PROFILE: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
+          API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
         run: |
-          if [ -n "${{ secrets.P12_CERTIFICATE_BASE64 }}" ] && [ -n "${{ secrets.PROVISIONING_PROFILE_BASE64 }}" ]; then
+          if [ -n "$P12" ] && [ -n "$PROFILE" ]; then
             echo "has_secrets=true" >> $GITHUB_OUTPUT
-            echo "status=configured" >> $GITHUB_OUTPUT
             echo "✅ Đã tìm thấy Apple Certificate và Provisioning Profile!"
           else
             echo "has_secrets=false" >> $GITHUB_OUTPUT
-            echo "status=missing" >> $GITHUB_OUTPUT
             echo "ℹ️ Chưa phát hiện Apple Certificate trong Secrets."
             echo "👉 Workflow sẽ tự động build kiểm tra (Unsigned Build) và tạo file cài đặt để bạn tải về."
+          fi
+
+          if [ -n "$API_KEY" ]; then
+            echo "has_api_key=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_api_key=false" >> $GITHUB_OUTPUT
           fi
 
       # ========== SIGNING SETUP (Chạy khi ĐÃ có secrets) ==========
@@ -146,7 +154,7 @@ jobs:
             -allowProvisioningUpdates
 
       - name: 🚀 Upload to App Store Connect
-        if: steps.check_secrets.outputs.has_secrets == 'true' && secrets.APP_STORE_CONNECT_API_KEY_BASE64 != ''
+        if: steps.check_secrets.outputs.has_secrets == 'true' && steps.check_secrets.outputs.has_api_key == 'true'
         env:
           APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
           API_KEY_ID: ${{ secrets.API_KEY_ID }}
