@@ -74,7 +74,7 @@ jobs:
 
           # Cài provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin <<< $(/usr/bin/security cms -D -i $PP_PATH))
+          UUID=$(/usr/bin/security cms -D -i $PP_PATH | /usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin)
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
 
           echo "PROVISIONING_PROFILE_UUID=$UUID" >> $GITHUB_ENV
@@ -101,9 +101,31 @@ jobs:
       # ========== EXPORT IPA ==========
       - name: 📦 Export IPA
         run: |
+          cat <<EOF > $RUNNER_TEMP/ExportOptions.plist
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store</string>
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>stripSwiftSymbols</key>
+              <true/>
+              <key>uploadSymbols</key>
+              <true/>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>$APP_BUNDLE_ID</key>
+                  <string>$PROVISIONING_PROFILE_UUID</string>
+              </dict>
+          </dict>
+          </plist>
+          EOF
+
           xcodebuild -exportArchive \
             -archivePath $RUNNER_TEMP/App.xcarchive \
-            -exportOptionsPlist ios/ExportOptions.plist \
+            -exportOptionsPlist $RUNNER_TEMP/ExportOptions.plist \
             -exportPath $RUNNER_TEMP/output \
             -allowProvisioningUpdates
 
