@@ -24,6 +24,7 @@ jobs:
       APP_BUNDLE_ID: com.vn.mv.chinesegames
       APP_SCHEME: App
       XCODE_PROJECT_PATH: ios/App
+      APPLE_TEAM_ID: KV7JYX42NM
 
     steps:
       # ========== CHECKOUT & SETUP ==========
@@ -116,9 +117,11 @@ jobs:
             -destination "generic/platform=iOS" \
             -archivePath $RUNNER_TEMP/App.xcarchive \
             PRODUCT_BUNDLE_IDENTIFIER="$APP_BUNDLE_ID" \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
             CURRENT_PROJECT_VERSION="${{ github.event.inputs.build_number || '1' }}" \
             MARKETING_VERSION="1.0.0" \
             CODE_SIGN_STYLE="Manual" \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
             PROVISIONING_PROFILE="$PROVISIONING_PROFILE_UUID" \
             -allowProvisioningUpdates
 
@@ -132,8 +135,12 @@ jobs:
           <dict>
               <key>method</key>
               <string>app-store</string>
+              <key>teamID</key>
+              <string>$APPLE_TEAM_ID</string>
               <key>signingStyle</key>
               <string>manual</string>
+              <key>signingCertificate</key>
+              <string>Apple Distribution</string>
               <key>stripSwiftSymbols</key>
               <true/>
               <key>uploadSymbols</key>
