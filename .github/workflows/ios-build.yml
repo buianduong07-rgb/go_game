@@ -103,9 +103,9 @@ jobs:
           PP_PATH=$RUNNER_TEMP/profile.mobileprovision
           python3 -c "import base64, os; open('$PP_PATH', 'wb').write(base64.b64decode(os.environ['PROVISIONING_PROFILE_BASE64']))"
 
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          UUID=$(/usr/bin/security cms -D -i $PP_PATH 2>/dev/null | /usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin 2>/dev/null || echo "cd437b00-0ca0-440b-99b8-09b7f10fc459")
-          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          UUID=$(/usr/bin/security cms -D -i "$PP_PATH" 2>/dev/null | /usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin 2>/dev/null || echo "cd437b00-0ca0-440b-99b8-09b7f10fc459")
+          cp "$PP_PATH" "$HOME/Library/MobileDevice/Provisioning Profiles/$UUID.mobileprovision"
 
           echo "PROVISIONING_PROFILE_UUID=$UUID" >> $GITHUB_ENV
 
